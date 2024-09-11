@@ -35,7 +35,7 @@ export default {
         initThree() {
             this.scene = new THREE.Scene();
 
-            this.scene.background = new THREE.Color(0xcccccc)
+            this.scene.background = new THREE.Color(0xe5e5e5)
 
             // Set up camera (Field of View, Aspect Ratio, Near and Far clipping plane)
             this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -65,7 +65,7 @@ export default {
 
                 this.skeleton = fbx.children[0].skeleton;
 
-                fbx.position.set(0, -2, -2);
+                fbx.position.set(0, -2, -1);
                 fbx.scale.set(0.022, 0.022, 0.022);
 
 
@@ -79,7 +79,7 @@ export default {
 
                 this.LoadMixamoAnimations('/src/assets/animations/Northern_Soul_Floor_Combo.fbx', 'Breakdance');
                 this.LoadMixamoAnimations('/src/assets/animations/Ymca_Dance.fbx', 'YMCA');
-                this.LoadMixamoAnimations('/src/assets/animations/Standing React Death Backward.fbx', 'Death');
+                this.LoadMixamoAnimations('/src/assets/animations/Standing React Death Backward.fbx', 'Ohhh Nooo :,(');
                 //This one is accsessed a bit different from the others, because the 3D model already has an animation built in
                 this.LoadMixamoAnimations('/src/assets/ThreeDModels/Kermit.fbx', 'Vibe dance');
 
@@ -140,10 +140,4 @@ export default {
 
 <style lang="scss">
 @import "../scss/modelView.scss";
-
-.three-container {
-    width: 100%;
-    height: 100vh;
-    display: block;
-}
 </style>
