@@ -63,8 +63,6 @@ export default {
             loader.load(modelUrl, (fbx) => {
                 this.scene.add(fbx)
 
-                this.skeleton = fbx.children[0].skeleton;
-
                 fbx.position.set(0, -2, -1);
                 fbx.scale.set(0.022, 0.022, 0.022);
 
