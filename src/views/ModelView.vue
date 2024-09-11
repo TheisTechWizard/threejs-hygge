@@ -38,7 +38,7 @@ export default {
 
             // Set up renderer and attach to DOM
             this.renderer = new THREE.WebGLRenderer();
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            this.renderer.setSize(1800, 850);
             this.$refs.sceneContainer.appendChild(this.renderer.domElement);
 
             const ambientLight = new THREE.AmbientLight(0xffffff, 1);
