@@ -1,20 +1,17 @@
 <template>
-    <button @click="playAnimation"> Click if feeling groovy </button>
+    <button v-for="(animation, name) in animationsList" :key="name" @click="playAnimation(name)"> {{ name }}</button>
     <div ref="sceneContainer" class="three-container"></div>
 </template>
 
 <script>
 import * as THREE from "three";
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import modelUrl from '../assets/ThreeDModels/vibe_kermit.glb';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+import modelUrl from '../assets/ThreeDModels/Kermit.fbx';
 
 export default {
     data() {
         return {
-            // scene: null,
-            // camera: null,
-            // renderer: null,
-            // cube: null,
+            animationsList: {},
             clock: new THREE.Clock()
         };
     },
@@ -23,10 +20,13 @@ export default {
         this.animate();
         window.addEventListener("resize", this.onWindowResize);
     },
+
     beforeDestroy() {
         window.removeEventListener("resize", this.onWindowResize);
     },
+
     methods: {
+
         initThree() {
             this.scene = new THREE.Scene();
 
@@ -46,30 +46,39 @@ export default {
             const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
             this.scene.add(directionalLight);
 
+            this.animationsList = {}
+
             this.loadModel();
         },
 
         //Code for loading my 3D Model, and creating an animationController
         loadModel() {
-            const loader = new GLTFLoader();
+            const loader = new FBXLoader();
 
-            loader.load(
-                modelUrl,
-                (gltf) => {
-                    this.model = gltf.scene;
-                    this.scene.add(this.model);
+            loader.load(modelUrl, (fbx) => {
+                this.scene.add(fbx)
 
-                    this.mixer = new THREE.AnimationMixer(this.model)
-                    const animationClip = gltf.animations[0];
+                this.skeleton = fbx.children[0].skeleton;
 
-                    if (animationClip) {
-                        this.action = this.mixer.clipAction(animationClip);
-                    }
+                fbx.position.set(0, -2, -2);
+                fbx.scale.set(0.022, 0.022, 0.022);
 
-                    this.model.position.set(0, -2, 0);
 
-                    this.model.scale.set(1, 1, 1);
-                },
+                this.mixer = new THREE.AnimationMixer(fbx)
+
+                //This code is here because there
+                const animationClip = fbx.animations[0];
+                if (animationClip) {
+                    this.action = this.mixer.clipAction(animationClip);
+                }
+
+                this.LoadMixamoAnimations('/src/assets/animations/Northern_Soul_Floor_Combo.fbx', 'Breakdance');
+                this.LoadMixamoAnimations('/src/assets/animations/Ymca_Dance.fbx', 'YMCA');
+                this.LoadMixamoAnimations('/src/assets/animations/Standing React Death Backward.fbx', 'Death');
+                //This one is accsessed a bit different from the others, because the 3D model already has an animation built in
+                this.LoadMixamoAnimations('/src/assets/ThreeDModels/Kermit.fbx', 'Vibe dance');
+
+            },
                 (xhr) => {
                     console.log(`Model ${(xhr.loaded / xhr.total) * 100}% loaded`);
                 },
@@ -78,19 +87,35 @@ export default {
                 }
             );
         },
-        //For animation my 3D Model
-        playAnimation() {
-            if (this.action) {
-                this.action.play();
+
+        LoadMixamoAnimations(path, name) {
+            const loader = new FBXLoader();
+            loader.load(path, (fbx) => {
+                const animationClip = fbx.animations[0];
+                if (animationClip) {
+                    this.action = this.mixer.clipAction(animationClip);
+                }
+                this.animationsList[name] = this.action
+            })
+
+            console.log(this.animationsList)
+        },
+
+        playAnimation(name) {
+            // Stop all current animations
+            for (let key in this.animationsList) {
+                this.animationsList[key].stop();
+            }
+
+            // Play the desired animation
+            const action = this.animationsList[name];
+            if (action) {
+                action.reset().play();
             }
         },
 
         animate() {
             requestAnimationFrame(this.animate);
-
-            // Rotate cube for animation
-            //this.cube.rotation.x += 0.01;
-            //this.cube.rotation.y += 0.01;
 
             // Update the mixer for animations
             const delta = this.clock.getDelta(); // Get the time difference between frames
