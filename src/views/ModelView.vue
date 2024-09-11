@@ -1,6 +1,11 @@
 <template>
-    <button v-for="(animation, name) in animationsList" :key="name" @click="playAnimation(name)"> {{ name }}</button>
-    <div ref="sceneContainer" class="three-container"></div>
+    <div class="model-view-wrapper">
+        <div class="button-wrapper">
+            <button v-for="(animation, name) in animationsList" :key="name" @click="playAnimation(name)"> {{ name
+                }}</button>
+        </div>
+        <div ref="sceneContainer" class="three-container"></div>
+    </div>
 </template>
 
 <script>
@@ -133,7 +138,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+@import "../scss/modelView.scss";
+
 .three-container {
     width: 100%;
     height: 100vh;
