@@ -100,8 +100,6 @@ export default {
                 }
                 this.animationsList[name] = this.action
             })
-
-            console.log(this.animationsList)
         },
 
         playAnimation(name) {
